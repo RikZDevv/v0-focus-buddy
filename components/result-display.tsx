@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Copy, Check, Sparkles, Bot, Zap } from "lucide-react"
+import { Copy, Check, Sparkles, Bot, Baby, Headphones, CheckSquare, GitBranch } from "lucide-react"
 import { useState } from "react"
 import type { Mode } from "@/app/page"
 import { cn } from "@/lib/utils"
@@ -13,13 +13,19 @@ interface ResultDisplayProps {
 }
 
 const modeIcons: Record<Mode, React.ReactNode> = {
-  eli5: <span className="text-xl">5</span>,
+  eli5: <Baby className="h-5 w-5" />,
   emoji: <Sparkles className="h-5 w-5" />,
-  podcast: <Bot className="h-5 w-5" />,
-  action_steps: <Check className="h-5 w-5" />,
-  context_translate: <span className="text-lg">AB</span>,
-  mindmap: <Zap className="h-5 w-5" />,
-  mediscan: <span className="text-lg">+</span>,
+  podcast: <Headphones className="h-5 w-5" />,
+  action_steps: <CheckSquare className="h-5 w-5" />,
+  mindmap: <GitBranch className="h-5 w-5" />,
+}
+
+const modeNames: Record<Mode, string> = {
+  eli5: "ELI5",
+  emoji: "Visual Summary",
+  podcast: "Podcast Script",
+  action_steps: "Action Steps",
+  mindmap: "Mind Map",
 }
 
 export function ResultDisplay({ result, isLoading, selectedMode }: ResultDisplayProps) {
@@ -55,10 +61,8 @@ export function ResultDisplay({ result, isLoading, selectedMode }: ResultDisplay
       <div className="glass-card flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl p-8">
         {/* Animated loading indicator */}
         <div className="relative mb-6">
-          {/* Outer glow ring */}
           <div className="absolute inset-0 animate-ping rounded-full bg-primary/30" />
           
-          {/* Main spinner */}
           <div className="relative flex h-20 w-20 items-center justify-center">
             <svg className="h-20 w-20 animate-spin" viewBox="0 0 100 100">
               <circle
@@ -82,19 +86,17 @@ export function ResultDisplay({ result, isLoading, selectedMode }: ResultDisplay
               />
             </svg>
             
-            {/* Center icon */}
             <div className="absolute flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary">
               {modeIcons[selectedMode]}
             </div>
           </div>
         </div>
         
-        <p className="text-lg font-medium text-foreground">Processing...</p>
+        <p className="text-lg font-medium text-foreground">Processing with {modeNames[selectedMode]}...</p>
         <p className="mt-1 text-sm text-muted-foreground">
           AI is analyzing your content
         </p>
         
-        {/* Loading dots */}
         <div className="mt-4 flex gap-1">
           <div className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: "0ms" }} />
           <div className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: "150ms" }} />
@@ -106,7 +108,6 @@ export function ResultDisplay({ result, isLoading, selectedMode }: ResultDisplay
 
   return (
     <div className="glass-card overflow-hidden rounded-2xl">
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-5 py-4">
         <h2 className="flex items-center gap-2 text-sm font-medium text-foreground">
           <Bot className="h-4 w-4 text-primary" />
@@ -137,7 +138,6 @@ export function ResultDisplay({ result, isLoading, selectedMode }: ResultDisplay
         </Button>
       </div>
       
-      {/* Content */}
       <div className="max-h-[500px] overflow-y-auto p-5">
         <div className="prose prose-invert max-w-none">
           <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 md:text-base">
