@@ -1,29 +1,50 @@
-# v0-focus-buddy
+# 🚀 FocusBuddy: Your Universal Visual Intelligence Assistant
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+**FocusBuddy** is a hybrid AI assistant designed to break down information barriers in the real world. By combining **Vision AI** and **Llama 3 Speed**, this app transforms complex data (medical prescriptions, academic problems, technical instructions) into simple, human language (ELI5).
 
-## Built with v0
+---
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## 🌟 The Impact Narrative (Social Problem)
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_HML6fRM1hLYKJQVCDtaPBUmgQb6K)
+### 📉 The Problem: Information Overload & Literacy Gap
+Many people—from students stressed by difficult homework to laypeople confused by medical jargon—experience a "mental block" when facing rigid, technical texts. Academic and medical language is often too cold and difficult to digest in today’s era of digital distraction.
 
-## Getting Started
+### 💡 Our Solution: Humanizing Information
+**FocusBuddy** serves as a cognitive bridge. We don't just provide answers; we "translate" the visual world into user-friendly instructions.
+- **Accessibility:** Empowering anyone to understand complex text simply by taking a photo.
+- **Extreme Efficiency:** Running a high-end solution with an operational cost of only **$0.0003** per session.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## ✨ Core Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **MediScan (Vision AI):** Take a photo of your medicine and let the AI analyze it instantly.
+2. **ELI5 Mode (Explain Like I'm 5):** Automatic explanations using simple, cheerful, and memorable language.
+3. **Hybrid AI Engine:** Powered by **Groq** for text speed and **OpenRouter/Gemini** for visual precision.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
+## 🛠️ Tech Stack (The "Solder" Architecture)
+
+We use a **Hybrid** architecture to minimize costs and maximize speed:
+- **Framework:** Next.js / Vercel (v0)
+- **Fast Reasoning:** [Groq SDK](https://groq.com/) (Llama 3.3 70B) — Sub-second latency!
+- **Visual Intelligence:** [OpenRouter](https://openrouter.ai/) (Gemini 2.0 Flash) — High precision
+- **Frontend:** Pure HTML/JS/CSS logic (Zero-dependency for peak performance).
+
+---
+
+## 🚀 How to Run
+
+1. Clone this repository.
+2. Add Environment Variables in Vercel:
+   - `GROQ_API_KEY`
+   - `OPENROUTER_API_KEY`
+3. Deploy and start your "Snap & Ask" journey!
+
+---
+
+> *"FocusBuddy is more than a chatbot; it's a real-world navigation tool that is Fast, Smart, and extremely Affordable."*
 ## Learn More
 
 To learn more, take a look at the following resources:
