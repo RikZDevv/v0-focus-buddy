@@ -3,8 +3,7 @@
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent } from "@/components/ui/card"
-import { Upload, X, Send, ImageIcon, Loader2 } from "lucide-react"
+import { Upload, X, Send, ImageIcon, Loader2, Wand2 } from "lucide-react"
 import type { Mode } from "@/app/page"
 import { cn } from "@/lib/utils"
 
@@ -19,9 +18,19 @@ const placeholders: Record<Mode, string> = {
   emoji: "Paste text to get 3 powerful bullet points with emojis...",
   podcast: "Paste a topic and I'll create a conversational podcast script...",
   action_steps: "Paste any wall of text and I'll create an ADHD-friendly checklist...",
-  context_translate: "Paste text to get a simplified version with a glossary...",
+  context_translate: "Paste text and specify target language for translation with context...",
   mindmap: "Paste text and I'll create a visual mind map structure...",
   mediscan: "Describe what you see or add context for the image analysis...",
+}
+
+const modeLabels: Record<Mode, string> = {
+  eli5: "Simplify with ELI5",
+  emoji: "Create Visual Summary",
+  podcast: "Generate Podcast Script",
+  action_steps: "Extract Action Steps",
+  context_translate: "Translate with Context",
+  mindmap: "Build Mind Map",
+  mediscan: "Analyze Medical Image",
 }
 
 export function InputArea({ selectedMode, onSubmit, isLoading }: InputAreaProps) {
@@ -73,26 +82,37 @@ export function InputArea({ selectedMode, onSubmit, isLoading }: InputAreaProps)
   }
 
   return (
-    <Card className="mb-6 border-border bg-card">
-      <CardContent className="p-4 md:p-6">
+    <div className="glass-card overflow-hidden rounded-2xl">
+      <div className="border-b border-white/5 bg-white/[0.02] px-5 py-4">
+        <h2 className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <Wand2 className="h-4 w-4 text-primary" />
+          Input
+        </h2>
+      </div>
+      
+      <div className="p-5">
         {/* Image upload area for MediScan */}
         {isMediScan && (
           <div className="mb-4">
             {imagePreview ? (
-              <div className="relative">
+              <div className="relative overflow-hidden rounded-xl">
                 <img
                   src={imagePreview}
                   alt="Upload preview"
-                  className="max-h-64 w-full rounded-lg object-contain"
+                  className="max-h-56 w-full object-contain"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="absolute right-2 top-2"
+                  className="absolute right-3 top-3 h-8 w-8 rounded-full"
                   onClick={clearImage}
                 >
                   <X className="h-4 w-4" />
                 </Button>
+                <p className="absolute bottom-3 left-3 text-sm font-medium text-white">
+                  {image?.name}
+                </p>
               </div>
             ) : (
               <div
@@ -101,27 +121,29 @@ export function InputArea({ selectedMode, onSubmit, isLoading }: InputAreaProps)
                 onDragLeave={handleDragLeave}
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  "flex h-48 cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed transition-colors",
+                  "flex h-44 cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed transition-all duration-300",
                   isDragging
-                    ? "border-primary bg-primary/10"
-                    : "border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-muted/50"
+                    ? "border-primary bg-primary/10 scale-[1.02]"
+                    : "border-white/10 hover:border-white/20 hover:bg-white/[0.02]"
                 )}
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                  <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                <div className={cn(
+                  "flex h-14 w-14 items-center justify-center rounded-full transition-colors",
+                  isDragging ? "bg-primary/20" : "bg-white/5"
+                )}>
+                  <ImageIcon className={cn(
+                    "h-7 w-7 transition-colors",
+                    isDragging ? "text-primary" : "text-muted-foreground"
+                  )} />
                 </div>
                 <div className="text-center">
                   <p className="font-medium text-foreground">
-                    Drop an image here or click to upload
+                    {isDragging ? "Drop your image here" : "Drop an image or click to upload"}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Supports JPG, PNG, WebP
                   </p>
                 </div>
-                <Button variant="secondary" size="sm">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Choose File
-                </Button>
               </div>
             )}
             <input
@@ -140,23 +162,44 @@ export function InputArea({ selectedMode, onSubmit, isLoading }: InputAreaProps)
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={placeholders[selectedMode]}
-            className="min-h-32 resize-none border-muted-foreground/20 bg-background pr-12 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+            className={cn(
+              "min-h-36 resize-none rounded-xl border-white/10 bg-white/[0.02] text-foreground transition-all duration-300",
+              "placeholder:text-muted-foreground/60",
+              "focus:border-primary/50 focus:bg-white/[0.03] focus-visible:ring-primary/30",
+              isMediScan && "min-h-24"
+            )}
             disabled={isLoading}
           />
+        </div>
+
+        {/* Submit button */}
+        <div className="mt-4 flex justify-end">
           <Button
             onClick={handleSubmit}
             disabled={isLoading || (isMediScan ? !image : !text.trim())}
-            size="icon"
-            className="absolute bottom-3 right-3"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
+            size="lg"
+            className={cn(
+              "group relative overflow-hidden rounded-xl px-6 transition-all duration-300",
+              "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400",
+              "disabled:from-muted disabled:to-muted disabled:text-muted-foreground"
             )}
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  {modeLabels[selectedMode]}
+                  <Send className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
+            </span>
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
