@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         throw new Error('No image provided for MediScan');
       }
 
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 
       // Convert image to base64
       const bytes = await imageFile.arrayBuffer();

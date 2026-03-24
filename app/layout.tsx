@@ -10,7 +10,7 @@ const inter = Inter({
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'FocusBuddy - 7 Sages for Neurodiverse Minds',
+  title: 'FocusBuddy',
   description: 'An ADHD-friendly AI tool that transforms complex content into digestible formats using ELI5 explanations, emoji summaries, podcast scripts, action checklists, translations, mind maps, and medical image analysis.',
   generator: 'v0.app',
   icons: {
