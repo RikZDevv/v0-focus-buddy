@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Groq untuk text processing (cepat, anti-limit)
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
-
-// Gemini untuk vision/image analysis
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,13 +13,11 @@ export async function POST(request: NextRequest) {
     const text = formData.get('text') as string;
     const imageFile = formData.get('image') as File | null;
 
-    // MODE MEDISCAN - Pakai Gemini (punya vision)
+    // MODE MEDISCAN - Pakai OpenRouter dengan Gemini 2.0 Flash
     if (mode === 'mediscan') {
       if (!imageFile) {
         throw new Error('No image provided for MediScan');
       }
-
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
       // Convert image to base64
       const bytes = await imageFile.arrayBuffer();
@@ -52,18 +46,43 @@ ${text ? `\nAdditional context from user: ${text}` : ''}
 
 Remember: Be helpful and educational, but always emphasize this is not a diagnosis!`;
 
-      const result = await model.generateContent([
-        {
-          inlineData: {
-            data: base64,
-            mimeType: mimeType,
-          },
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
         },
-        prompt,
-      ]);
+        body: JSON.stringify({
+          model: 'google/gemini-2.0-flash-001',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: `data:${mimeType};base64,${base64}`,
+                  },
+                },
+                {
+                  type: 'text',
+                  text: prompt,
+                },
+              ],
+            },
+          ],
+        }),
+      });
 
-      const response = await result.response;
-      return NextResponse.json({ result: response.text() });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'OpenRouter API error');
+      }
+
+      const data = await response.json();
+      const result = data.choices[0]?.message?.content || '';
+
+      return NextResponse.json({ result });
     }
 
     // MODE LAINNYA - Pakai Groq (wus-wus cepat)
